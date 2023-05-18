@@ -68,7 +68,7 @@ class Image(BaseModel):
         verbose_name_plural = 'تصویر'
 
     product = models.ForeignKey(Product, verbose_name='محصول', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='product', blank=True, null=True, verbose_name="تصویر")
+    image = models.ImageField(upload_to='media', blank=True, null=True, verbose_name="تصویر")
 
     def __str__(self):
         return f' تصویر{self.product.name}'
