@@ -30,6 +30,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
                             <h5 class="card-title">{{ product.price }} تومان</h5>
+                            <h5 class="card-title"> قیمت با تخفیف  : {{ product.discount_price }} تومان</h5>
                         </div>
                         <div class="card-footer">
                             <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-block">جزئیات محصول</a>

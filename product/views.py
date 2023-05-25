@@ -1,15 +1,16 @@
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views import generic
 # from rest_framework_simplejwt.authentication import JWTAuthentication
 from .forms import CommentForm
 from .models import Product, Category, Discount
+
+
 # from customers.models import User
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 # from rest_framework.decorators import api_view, permission_classes, authentication_classes
-
-
 
 
 class HomeView(TemplateView):
@@ -25,15 +26,11 @@ class CategoryListView(generic.ListView):
     # def get_queryset(self):
     #     return Category.objects.filter(discount__status=True)
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     categories = Category.objects.all()
-    #     discounts = []
-    #     for category in categories:
-    #         if category.discount.status:
-    #             discounts.append(category)
-    #     context['discounts'] = discounts
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        discounts = Category.objects.filter(discount__status=True)
+        context['discounts'] = discounts
+        return context
 
 
 class CategoryDetailView(generic.DetailView):
@@ -92,9 +89,21 @@ class DiscountedCategoryListView(generic.ListView):
 
 
 class DiscountedProductListView(generic.ListView):
+    model = Product
     template_name = 'discounted_products.html'
     context_object_name = 'products'
     paginate_by = 6
 
     def get_queryset(self):
-        return Product.objects.filter(discount__status=True)
+        # Get all products that themselves or their categories are discounted
+        return Product.objects.filter(Q(discount__status=True) | Q(category__discount__status=True))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = context['products']
+        images = {}
+        for product in products:
+            product_image = product.product_image.first()
+            images[product] = product_image
+            context['images'] = images
+        return context
