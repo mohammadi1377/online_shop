@@ -23,6 +23,10 @@ class RegisterView(generics.GenericAPIView):
 		return redirect('/home/')
 
 
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.http import HttpResponse
+
+
 class LoginAPIView(generics.GenericAPIView):
 	serializer_class = LoginSerializer
 
@@ -32,6 +36,14 @@ class LoginAPIView(generics.GenericAPIView):
 	def post(self, request):
 		serializer = self.serializer_class(data=request.data)
 		if serializer.is_valid():
+			user = serializer.validated_data['user']
+			refresh = RefreshToken.for_user(user)
+			access_token = refresh.access_token
+
+			# Set the access token as a cookie
+			response = HttpResponse()
+			response.set_cookie('jwt', access_token, httponly=True)
+
 			return redirect('home')
 		else:
 			messages.error(request, 'نام کاربری یا رمز عبور اشتباه است')

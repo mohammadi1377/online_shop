@@ -55,7 +55,10 @@
                 <div class="col-md-6">
                     <div class="card-text">
                         <h2>{{ product.name }}</h2>
-                                        <h4>{{ product.price }} تومان </h4>
+                         <h4>{{ product.price }} تومان </h4>
+                    {% if category.discount.status or product.discount.status %}
+                                <h5 class="card-title" style="color: red">قیمت با تخفیف : {{ product.discount_price }} تومان</h5>
+                            {% endif %}
 
                         {% if product.stock %}
                             <p class="text-sm">

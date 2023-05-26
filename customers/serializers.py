@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import User
 from django.contrib import auth
@@ -42,16 +43,16 @@ class LoginSerializer(serializers.ModelSerializer):
 	def validate(self, attrs):
 		username = attrs.get('username', '')
 		password = attrs.get('password', '')
-		user = auth.authenticate(username=username, password=password)
-		if not user:
+		user = authenticate(username=username, password=password)
+
+		if user is None:
 			raise AuthenticationFailed('Invalid credentials, try again')
+
 		if not user.is_active:
 			raise AuthenticationFailed('Account disabled, contact admin')
-		return {
-			'email': user.email,
-			'username': user.username,
-			'tokens': user.tokens
-		}
+
+		attrs['user'] = user
+		return attrs
 
 
 class LogoutSerializer(serializers.Serializer):
