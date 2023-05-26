@@ -1,10 +1,10 @@
-from rest_framework import generics, status, views, permissions
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, permissions
 from .serializers import RegisterSerializer, LoginSerializer, LogoutSerializer
 from django.shortcuts import redirect, render
 from django.contrib import messages
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.http import HttpResponse
+
 
 
 class RegisterView(generics.GenericAPIView):
@@ -21,10 +21,6 @@ class RegisterView(generics.GenericAPIView):
 		# user_data = serializer.data
 		# return Response(user_data, status=status.HTTP_201_CREATED)
 		return redirect('/home/')
-
-
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.http import HttpResponse
 
 
 class LoginAPIView(generics.GenericAPIView):
@@ -58,4 +54,10 @@ class LogoutAPIView(generics.GenericAPIView):
 		serializer = self.serializer_class(data=request.data)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		return Response(status=status.HTTP_204_NO_CONTENT)
+
+		# Clear the JWT tokens from cookies
+		response = HttpResponse()
+		response.delete_cookie('jwt')
+		response.delete_cookie('refresh_token')
+
+		return response
