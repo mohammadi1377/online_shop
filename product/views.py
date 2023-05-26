@@ -62,20 +62,28 @@ class ProductDetailView(generic.DetailView):
         context['comments'] = comments
         context['images'] = images
         context['details'] = details
+        context['comment_form'] = CommentForm()  # Add the comment form to the context
         return context
 
-    # @api_view(['GET', 'POST'])
-    # @permission_classes((IsAuthenticated,))
-    # @authentication_classes((JSONWebTokenAuthentication,))
     def post(self, request, *args, **kwargs):
+        print("***1*******")
         form = CommentForm(request.POST)
+        print("***2*******")
         if form.is_valid():
+            print("***3*******")
             comment = form.save(commit=False)
+            print("***4******")
             comment.product = self.get_object()
+            print("**5******")
             comment.customer = self.request.user
+            print("***6******")
             comment.save()
-        else:
+            print("***7******")
             return redirect('product_detail', pk=self.get_object().pk)
+        else:
+            print(form.errors)  # Print form validation errors for debugging purposes
+        print("***8****")
+        return redirect('product_detail', pk=self.kwargs['pk'])
 
 
 class DiscountedCategoryListView(generic.ListView):

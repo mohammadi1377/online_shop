@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
 
 
 
@@ -33,6 +34,10 @@ class LoginAPIView(generics.GenericAPIView):
 		serializer = self.serializer_class(data=request.data)
 		if serializer.is_valid():
 			user = serializer.validated_data['user']
+
+			# Authenticate the user
+			login(request, user)
+
 			refresh = RefreshToken.for_user(user)
 			access_token = refresh.access_token
 

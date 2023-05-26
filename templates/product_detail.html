@@ -11,7 +11,8 @@
                                 <use xlink:href="/static/images/sprite.svg#arrow-rounded-right-6x9"></use>
                             </svg>
 
-                        <li class="breadcrumb-item"><a href="{% url 'category_detail' product.category.pk %}" dideo-checked="true">{{ product.category.title }}</a>
+                        <li class="breadcrumb-item"><a href="{% url 'category_detail' product.category.pk %}"
+                                                       dideo-checked="true">{{ product.category.title }}</a>
 
                         <li class="breadcrumb-item active" aria-current="page"> {{ product.name }}</li>
                     </ol>
@@ -55,10 +56,11 @@
                 <div class="col-md-6">
                     <div class="card-text">
                         <h2>{{ product.name }}</h2>
-                         <h4>{{ product.price }} تومان </h4>
-                    {% if category.discount.status or product.discount.status %}
-                                <h5 class="card-title" style="color: red">قیمت با تخفیف : {{ product.discount_price }} تومان</h5>
-                            {% endif %}
+                        <h4>{{ product.price }} تومان </h4>
+                        {% if category.discount.status or product.discount.status %}
+                            <h5 class="card-title" style="color: red">قیمت با تخفیف : {{ product.discount_price }}
+                                تومان</h5>
+                        {% endif %}
 
                         {% if product.stock %}
                             <p class="text-sm">
@@ -128,12 +130,14 @@
                 {% if user.is_authenticated %}
                     <div class="card pt-3 pr-3 ml-3 mb-3">
                         <h2>افزودن دیدگاه</h2>
-                        <form id="comment-form" style="padding: 20px" method="post" action="#">
+                        <form id="comment-form" style="padding: 20px" method="post"
+                              action="{% url 'product_detail' pk=object.pk %}">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="comment">دیدگاه:</label>
-                                <textarea class="form-control" id="comment" name="comment" rows="5" required></textarea>
+                                <label for="id_text">دیدگاه:</label>
+                                <textarea class="form-control" id="id_text" name="text" rows="5" required></textarea>
                             </div>
+                            <p class="text-muted">نام کاربری: {{ user.username }}</p>
                             <button type="submit" class="btn btn-primary">ثبت دیدگاه</button>
                         </form>
                     </div>
@@ -141,6 +145,7 @@
                     <p><a href="{% url 'api:login' %}?next={{ request.path }}"> برای ثبت دیدگاه ابتدا وارد شوید.</a></p>
                 {% endif %}
             </div>
+
         </div>
     </section>
 {% endblock %}
