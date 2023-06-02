@@ -66,23 +66,15 @@ class ProductDetailView(generic.DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print("***1*******")
         form = CommentForm(request.POST)
-        print("***2*******")
         if form.is_valid():
-            print("***3*******")
             comment = form.save(commit=False)
-            print("***4******")
             comment.product = self.get_object()
-            print("**5******")
             comment.customer = self.request.user
-            print("***6******")
             comment.save()
-            print("***7******")
             return redirect('product_detail', pk=self.get_object().pk)
         else:
             print(form.errors)  # Print form validation errors for debugging purposes
-        print("***8****")
         return redirect('product_detail', pk=self.kwargs['pk'])
 
 

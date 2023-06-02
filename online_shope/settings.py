@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'product',
+    'cart',
     'customers',
     'order',
     'rest_framework',
@@ -49,12 +50,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
 ]
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-}
+#
+# REST_FRAMEWORK = {
+#     # 'DEFAULT_AUTHENTICATION_CLASSES': (
+#     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     # )
+# }
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=100),
@@ -97,7 +98,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.middleware.middleware.JWTAuthenticationMiddleware',
 ]
+
 
 ROOT_URLCONF = 'online_shope.urls'
 
@@ -179,6 +183,10 @@ BASE_DIR / "static",
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'customers.User'
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+# SESSION_COOKIE_SECURE = True  # Optional: Use secure cookies for session
+
 
 # Celery settings
 CELERY_BROKER_URL = 'redis://localhost:6379'

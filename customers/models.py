@@ -12,7 +12,8 @@ class User(BaseModel, AbstractUser):
 	phone_regex = RegexValidator(regex=r'09(\d{9})$',
 								 message='Enter a valid mobile number. This value may contain only numbers.')
 	phone_number = models.CharField(validators=[phone_regex], max_length=11, blank=True, verbose_name="شماره موبایل")
-	discount = models.ForeignKey(Discount, related_name='customer_discount', verbose_name="تخفیف کاربر", on_delete=models.CASCADE, null=True, blank=True)
+	discount = models.ForeignKey(Discount, related_name='customer_discount', verbose_name="تخفیف کاربر",
+								 on_delete=models.CASCADE, null=True, blank=True)
 
 	# USERNAME_FIELD = 'email'
 
@@ -24,21 +25,16 @@ class User(BaseModel, AbstractUser):
 		verbose_name = "کاربر"
 		verbose_name_plural = "کاربر"
 
-	def tokens(self):
-		refresh = RefreshToken.for_user(self)
-		return {
-			'refresh': str(refresh),
-			'access': str(refresh.access_token)
-		}
+	# def tokens(self):
+	# 	refresh = RefreshToken.for_user(self)
+	# 	return {
+	# 		'refresh': str(refresh),
+	# 		'access': str(refresh.access_token)
+	# 	}
 
 
 class Address(BaseModel):
-	customer = models.ForeignKey(
-		User,
-		on_delete=models.CASCADE,
-		related_name='addresses',
-		related_query_name='address',
-	)
+	customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses', related_query_name='address')
 	state = models.CharField(max_length=150, verbose_name="کشور")
 	city = models.CharField(max_length=150, verbose_name="شهر")
 	postal_code = models.CharField(verbose_name=('کد پستی'), max_length=10, null=True, blank=True)
@@ -55,7 +51,7 @@ class Address(BaseModel):
 class Comment(BaseModel):
 	customer = models.ForeignKey(User, verbose_name="مشتری", on_delete=models.CASCADE)
 	text = models.TextField(verbose_name='نظر', max_length=100)
-	product = models.ForeignKey(Product, verbose_name="محصول", related_name='comment' ,on_delete=models.CASCADE)
+	product = models.ForeignKey(Product, verbose_name="محصول", related_name='comment', on_delete=models.CASCADE)
 
 	class Meta:
 		verbose_name = "نظر"

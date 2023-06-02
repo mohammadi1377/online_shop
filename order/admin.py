@@ -3,7 +3,7 @@ from .models import Orders, OrderItems
 
 @admin.register(Orders)
 class OrdersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer', 'total_price', 'status']
+    list_display = ['id', 'customer', 'status']
     list_filter = ['status']
     search_fields = ['customer']
     ordering = ['id']

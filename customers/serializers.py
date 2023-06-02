@@ -1,9 +1,8 @@
 from django.contrib.auth import authenticate
-from rest_framework import serializers
-from .models import User
-from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework import serializers
+from .models import User, Address
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -55,15 +54,27 @@ class LoginSerializer(serializers.ModelSerializer):
 		return attrs
 
 
-class LogoutSerializer(serializers.Serializer):
-	refresh = serializers.CharField()
+# class LogoutSerializer(serializers.Serializer):
+# 	refresh = serializers.CharField()
+#
+# 	def validate(self, attrs):
+# 		self.token = attrs['refresh']
+# 		return attrs
+#
+# 	def save(self, **kwargs):
+# 		try:
+# 			RefreshToken(self.token).blacklist()
+# 		except TokenError:
+# 			self.fail('bad_token')
 
-	def validate(self, attrs):
-		self.token = attrs['refresh']
-		return attrs
 
-	def save(self, **kwargs):
-		try:
-			RefreshToken(self.token).blacklist()
-		except TokenError:
-			self.fail('bad_token')
+class AddressSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Address
+		fields = '__all__'
+
+
+class UserSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields =['first_name', 'last_name', 'email', 'phone_number']

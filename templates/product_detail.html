@@ -97,7 +97,12 @@
                                 <li>{{ detail }}</li>
                             {% endfor %}
                         </ul>
-                        <a href="#" class="btn btn-primary">افزودن به سبد خرید</a>
+                        <a href="{%  url 'cart:add' product.id %}" class="btn btn-primary">افزودن به سبد خرید</a>
+{#                        <form action="{% url 'cart:add' product.id %}" method="post">#}
+{#                            {% csrf_token %}#}
+{#                            {{ form }}#}
+{#                            <input type="submit" class="btn btn-primary" value="Add to cart">#}
+{#                        </form>#}
                     </div>
                 </div>
             </div>

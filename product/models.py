@@ -77,7 +77,7 @@ class Product(BaseModel):
 		return self.name
 
 	@property
-	def discount_price(self):
+	def total_discount(self):
 		# Calculate product discount
 		product_discount = 0
 		if self.discount:
@@ -96,18 +96,20 @@ class Product(BaseModel):
 
 		# Calculate total discount
 		total_discount = product_discount + category_discount
+		return int(total_discount)
 
+	@property
+	def discount_price(self):
 		# Calculate discounted price
-		discounted_price = self.price - total_discount
+		discounted_price = self.price - self.total_discount
 
 		# Check if discounted price is negative
 		if discounted_price < 0:
 			raise ValueError("Discounted price cannot be negative.")
 
 		# Check if total discount is greater than 100%
-		if total_discount > self.price:
+		if self.total_discount > self.price:
 			raise ValueError("Total discount cannot exceed the price of the product.")
-
 		return discounted_price
 
 

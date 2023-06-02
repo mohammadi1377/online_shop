@@ -1,58 +1,96 @@
 {% extends 'base.html' %}
 {% block content %}
+    <style>
+        /* Custom form styles */
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-    <div class="container" >
-     <div class="card pt-3 pr-3 mb-5 mt-5" >
-        <div class="row">
-            <div class="col-md-5 mx-auto" >
-                <h2 class="text-center mb-4">ورود</h2>
-                <form id="register-form" method="post">
-                    {% csrf_token %}
-                    <div class="card mt-3 ml-3">
-                        <label for="username">نام کاربری</label>
-                        <input type="text" id="username" name="username" >
-                    </div>
-                    <div class="card mt-3 ml-3">
-                        <label for="password">رمز عبور</label>
-                        <input type="password" id="password" name="password">
-                    </div>
-                    <div class="card mt-3 ml-3">
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container py-5">
+        <div class="jumbotron">
+            <h2 class="text-center mb-4">ورود</h2>
+            {% include 'messages.html' %}
+            <form id="form-group-pro" method="post" action="{% url 'api:login' %}">
+                {% csrf_token %}
+                    <label for="username">نام کاربری</label>
+                    <input type="text" id="username" name="username">
+                    <label for="password">رمز عبور</label>
+                    <input type="password" id="password" name="password">
+
                     <button type="submit" class="btn btn-primary btn-block">ورود</button>
-                    </div>
-                    <br>
-                    <p><a href="{% url 'api:register' %}?next={{ request.path }}">لطفا اگر حساب کاربری ندارید ثبت نام کنید.</a></p>
-                </form>
-            </div>
+
+                <br>
+                <p><a href="{% url 'api:otp' %}">ورود با رمز یکبار مصرف</a></p>
+                <hr>
+                <p><a href="{% url 'api:register' %}?next={{ request.path }}">لطفا اگر حساب کاربری ندارید ثبت
+                    نام کنید.
+
+
+            </form>
         </div>
+
     </div>
-    </div>
+
 {% endblock %}
 <script>
-            $(document).ready(function () {
-                $('#register-form').submit(function (event) {
-                    event.preventDefault();
-                    let formdata = new FormData;
-                    formdata.append('username', $('#username').val().trim())
-                    formdata.append('password', $('#password').val().trim())
-                    console.log(formdata)
-                    $.ajax({
-                        url: "{% url 'api:login' %} ", // sreplace with the URL of your DRF API endpoint
-                        type: 'POST',
-                        dataType: 'json',
-                        data: formdata,
+    $(document).ready(function () {
+        $('#form-group-pro').submit(function (event) {
+            event.preventDefault();
+            let formdata = new FormData;
+            formdata.append('username', $('#username').val().trim())
+            formdata.append('password', $('#password').val().trim())
+            console.log(formdata)
+            $.ajax({
+                url: $('#form-group-pro').attr('action') , // sreplace with the URL of your DRF API endpoint
+                type: 'POST',
+                dataType: 'json',
+                data: formdata,
 
-                        success: function (data) {
-                            console.log('Success: ' + data);
-                            // handle successful registration here, such as redirecting to a new page
-                        },
-                        error: function (xhr, status, error) {
-                            console.log('Error: ' + error);
-                            // handle registration error here, such as displaying an error message to the user
-                        }
-                    });
-                });
+                success: function (data) {
+                    console.log('Success: ' + data);
+                    // handle successful registration here, such as redirecting to a new page
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error);
+                    // handle registration error here, such as displaying an error message to the user
+                }
             });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-                integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
-                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        });
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
