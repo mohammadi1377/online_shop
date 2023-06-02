@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container py-5">
+        <div class="jumbotron">
+            <h4>اطلاعات شخصی</h4>
+            <hr>
+            <p><strong>نام و نام خانوادگی :</strong> {{ user.get_full_name }}</p>
+            <p><strong>نام کاربری :</strong> {{ user.username }}</p>
+            <p><strong>ایمیل :</strong> {{ user.email }}</p>
+            <div class="button-row">
+                <a class="btn btn-outline-success btn-large" href="{% url 'api:edit_profile' request.user.id %}">ویرایش
+                    اطلاعات شخصی</a>
+                <a class="btn btn-outline-success btn-large" href="{% url 'api:add-address' request.user.id %}">افزودن
+                    آدرس</a>
+                <a class="btn btn-outline-success btn-large" href="#">مشاهده سفارشات</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-4" id="headings">
+                    <div class="card-header">آدرس ها <span class="float-left"><a
+                            href="{% url 'api:add-address' request.user.id %}">افزودن آدرس </a></span></div>
+                    <div class="card-body">
+                        {% if addresses %}
+                            {% for address in addresses %}
+                                <h4 class="mb-3">آدرس {{ forloop.counter }}</h4>
+                                <form class="float-left" method="POST"
+                                      action="{% url 'api:remove-address' address.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="address_id" value="{{ address.id }}">
+                                    <button type="submit" class="btn btn-link p-0"><i
+                                            class="fas fa-trash-alt small text-muted"></i></button>
+                                </form>
+                                <p>
+                                    <strong>کشور: </strong>{{ address.state }} <br>
+                                    <strong>شهر: </strong>{{ address.city }} <br>
+                                    <strong>کد پستی:</strong>{{ address.postal_code }} <br>
+                                    <strong>آدرس:</strong>{{ address.address }} <br>
+                                </p>
+                                <hr>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-danger">
+                                آدرسی تا کنون ثبت نشده است
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card mb-4" id="tables">
+                    <div class="card-header">سفارش های من</div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>آیتم</th>
+                                <th>وضعیت</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if orders %}
+                                {% for order in orders %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ order.id}}</td>
+                                        <td>
+                                            {{ order.status }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td class="text-danger" colspan="3">سبد خرید خالی است.</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {#    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>#}
+    {#    <script type="text/javascript">#}
+    {#    // Retrieve the token for the current user from your backend or wherever it is stored#}
+    {#    var token = '{{ user.token }}';#}
+    {#    // Set the token as a cookie with an expiry date#}
+    {#    var expiryDate = new Date();#}
+    {#    expiryDate.setDate(expiryDate.getDate() + 20); // Set the expiry date to 7 days from now#}
+    {#    var cookieValue = 'Bearer ' + token + '; expires=' + expiryDate.toUTCString() + '; path=/';#}
+    {#    document.cookie = 'token=' + cookieValue;#}
+    {##}
+    {#    // Set the token as the default header for Axios requests#}
+    {#    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;#}
+    {#</script>#}
+    {##}
+{% endblock content %}

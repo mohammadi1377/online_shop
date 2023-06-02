@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <style>
+        /* Custom form styles */
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container py-5">
+        {% include 'messages.html' %}
+        <div class="jumbotron">
+
+            <form id="edit-profile-form" method="patch" action="{% url 'api:edit_profile' request.user.pk %}">
+                {% csrf_token %}
+                {#            <input type="hidden" id="user-id" value="{{ request.user.pk }}">#}
+                <label for="first_name">نام</label>
+                <input type="text" id="first_name" name="first_name">
+
+                <label for="last_name">نام خانوادگی</label>
+                <input type="text" id="last_name" name="last_name">
+
+                <label for="phone_number">شماره موبایل</label>
+                <input type="text" id="phone_number" name="phone_number">
+
+                <label for="email">ایمیل</label>
+                <input type="text" id="email" name="email">
+                <button type="submit">ثبت تغییرات</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', function (e) {
+
+        $(document).ready(function () {
+            var userId = $('#user-id').val();
+
+            // Retrieve user profile data using AJAX
+            $.ajax({
+                url: '/api/edit-profile/', // replace with the URL of your DRF API endpoint
+                type: 'GET',
+                success: function (data) {
+                    $('#first_name').val(data.first_name);
+                    $('#last_name').val(data.last_name);
+                    $('#phone_number').val(data.phone_number);
+                    $('#email').val(data.email);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    // Handle error response
+                    console.log('Error:', errorThrown);
+                }
+            });
+
+            // Update user profile data using AJAX
+            $('#edit-profile-form').submit(function (event) {
+                event.preventDefault();
+
+                var formdata = new FormData();
+                formdata.append('first_name', $('#first_name').val().trim());
+                formdata.append('last_name', $('#last_name').val().trim());
+                formdata.append('email', $('#email').val().trim());
+                formdata.append('phone_number', $('#phone_number').val().trim());
+
+                function getCookie(c_name) {
+                    if (document.cookie.length > 0) {
+                        var c_start = document.cookie.indexOf(c_name + "=");
+                        if (c_start != -1) {
+                            c_start = c_start + c_name.length + 1;
+                            var c_end = document.cookie.indexOf(";", c_start);
+                            if (c_end == -1) c_end = document.cookie.length;
+                            return decodeURIComponent(document.cookie.substring(c_start, c_end));
+                        }
+                    }
+                    return "";
+                }
+
+                console.log(formdata);
+                $.ajax({
+                    url: '/api/edit-profile/', // replace with the URL of your DRF API endpoint
+                    type: 'PUT',
+                    processData: false,
+                    contentType: false,
+                    headers: {"X-CSRFToken": getCookie('csrftoken')},
+                    data: formdata,
+                    success: function (data) {
+                        console.log('Success: ' + data);
+                        // handle success, such as displaying a success message or redirecting
+                        alert('Profile updated successfully');
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error: ' + error);
+                        // handle error, such as displaying an error message to the user
+                        alert('Error updating profile data');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+{% endblock content %}

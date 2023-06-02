@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="jumbotron">
+            <div class="container my-5">
+                <h2 class="text-center mb-5">سفارش شما</h2>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col">نام محصول</div>
+                                    <div class="col">قیمت واحد</div>
+                                    <div class="col">تعداد</div>
+                                    <div class="col">تخفیف</div>
+                                    <div class="col">قیمت نهایی</div>
+                                </div>
+                            </div>
+                            <div class="card-body cart-items">
+
+                                {% for item in order_items %}
+                                    <div class="row">
+                                        <div class="col">{{ item.product.name }}</div>
+                                        <div class="col">{{ item.product.price }}</div>
+                                        <div class="col">{{ item.count }}</div>
+                                        <div class="col">{{ item.product.total_discount }}</div>
+                                        <div class="col">{{ item.product.discount_price}}</div>
+                                    </div>
+                                    <hr>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                جزئیات سفارش
+                            </div>
+                            <div class="card-body col-lg-12">
+                                <ul class="list-group col-lg-12">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        جمع کل فاکتور
+                                        <p>{{ order.total_price }} تومان </p>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        جمع تخفیف
+                                        <p>{{ order.total_discount }}تومان </p>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        مبلغ قابل پرداخت
+                                        <span>{{ order.total_payment }}تومان </span>
+                                    </li>
+                                </ul>
+                                <form class="float-left" method="POST"
+                                      action="{% url 'orders:update_status' order.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-block mt-3">پرداخت</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                آدرس تحویل سفارش
+                            </div>
+                            <div class="card-body">
+                                    <div class="row">
+                                        <span class="col">{{ order.address.state }} , {{ order.address.city }} , {{ order.address.address }} </span>
+                                        <span class="col">کدپستی : {{ order.address.postal_code }}</span>
+                                    </div>
+                                    <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="result"></div>
+
+{% endblock content %}
