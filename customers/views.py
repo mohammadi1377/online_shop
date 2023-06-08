@@ -1,6 +1,5 @@
 import datetime
 import re
-
 from django.db.models import Q
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
@@ -66,39 +65,30 @@ class Otp(View):
 		return render(request, 'login_otp.html', {'form': form})
 
 	def post(self, request):
-		send_otp_email('f.mohamady1377@yahoo.com')
-		print("______________")
 		form = SendOTPForm(request.POST)
-		print("//////////////")
 		if form.is_valid():
-			print("########", "none")
 			user = None
-			if re.match(r'[A-Za-z0-9]+[.-_]*[A-Za-z0-9]+@[A-Za-z0-9-]+\.[A-Z|a-z]{2,}',
-						form.cleaned_data['mail_phone']):
+			mail_phone = form.cleaned_data['mail_phone']
+			if re.match(r'^[A-Za-z0-9]+[-._]*[A-Za-z0-9]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$', mail_phone):
 				try:
-					print("^^^^^zir try")
-					user = User.objects.get(email=form.cleaned_data['mail_phone'])
-					print(user, "()()()()")
+					user = User.objects.get(email=mail_phone)
 				except User.DoesNotExist:
 					pass
 				if user:
-					print("***********")
-					send_otp_email.delay(form.cleaned_data['mail_phone'], 300)
-					print("&&&&&&&&&77", send_otp_email)
-					response = redirect('Verification')
-					expiry_minutes = 5
-			elif re.match(r'09(\d{9})$', form.cleaned_data['mail_phone']):
+					send_otp_email.delay(mail_phone)
+					response = redirect('api:verification')
+					response.set_cookie('user_email_or_phone', mail_phone)
+					return response
+			elif re.match(r'09(\d{9})$', mail_phone):
 				try:
-					user = User.objects.get(phone_number=form.cleaned_data['mail_phone'])
+					user = User.objects.get(phone_number=mail_phone)
 				except User.DoesNotExist:
 					pass
 				if user:
-					send_otp_sms.delay(form.cleaned_data['mail_phone'], 60)
-
-			if user:
-				# expires = datetime.datetime.now() + datetime.timedelta(minutes=expiry_minutes)
-				response.set_cookie('user_email_or_phone_number', form.cleaned_data['mail_phone'])
-				return response
+					send_otp_sms.delay(mail_phone, 60)
+					response = redirect('api:verification')
+					response.set_cookie('user_email_or_phone', mail_phone)
+					return response
 
 		return render(request, 'verification.html', {'form': form})
 
@@ -111,17 +101,21 @@ class Verification(View):
 	def post(self, request):
 		form = VerificationForm(request.POST)
 		if form.is_valid():
-			verfication_code = form.cleaned_data['verfication_code']
-			r = redis.Redis(Host='localhost', port=6379, db=0)
-			user_identifier = request.COOKIEs.get('user_email_or_phone', None)
-			storedcode = r.get(user_identifier).decode()
-			if verfication_code == storedcode:
-				condition1 = Q(email=user_identifier)
-				condition2 = Q(phone=user_identifier)
-				user = User.objects.filter(condition1 | condition2).first()
+			verification_code = form.cleaned_data['verification_code']
+			user_identifier = request.COOKIES.get('user_email_or_phone')
+			r = redis.Redis(host='localhost', port=6379, db=0)
+			stored_code = r.get(user_identifier).decode()
+			if verification_code == stored_code:
+				user = User.objects.filter(Q(email=user_identifier) | Q(phone_number=user_identifier)).first()
 				if user:
-					login(request, user)
-				return redirect('home')
+					refresh = RefreshToken.for_user(user)
+					access_token = refresh.access_token
+					# Set the access token as a cookie
+					url = reverse('home')
+					response = HttpResponseRedirect(url)
+					response.set_cookie('jwt', access_token, httponly=True)
+					return response
+
 		return render(request, "verification.html", {"form": form})
 
 

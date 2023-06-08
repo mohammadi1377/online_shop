@@ -18,8 +18,8 @@ def send_otp_email(email):
     f'Your OTP code is: {otp_code}',
     'shervinrezaei1378@gmail.com',
     [email],
-
     )
+
 
 @shared_task
 def send_otp_sms(phone_number):

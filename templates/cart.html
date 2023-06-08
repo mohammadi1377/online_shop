@@ -26,41 +26,29 @@
                                         <div class="col">{{ item.price }}</div>
                                         <div class="col-3">
                                             <div class="input-group">
-                                                <a href="{% url 'cart:mines' item.product.id %}" class="btn btn-outline-secondary" type="button"
-                                                   id="button-minus-1"
-                                                   >
+                                                <button onclick="decrementQuantity({{ item.product.id }})" class="btn btn-outline-secondary" type="button" id="button-minus-{{ item.product.id }}">
                                                     -
-                                                </a>
-                                                <input type="text" class="form-control text-center"
-                                                       value={{ item.quantity }}>
-                                                <a href="{% url 'cart:add' item.product.id %}"
-                                                   class="btn btn-outline-secondary" type="button"
-                                                   id="button-plus-1"
-                                                >
+                                                </button>
+                                                <input type="text" class="form-control text-center" value="{{ item.quantity }}" id="quantity-{{ item.product.id }}">
+                                                <button onclick="incrementQuantity({{ item.product.id }})" class="btn btn-outline-secondary" type="button" id="button-plus-{{ item.product.id }}">
                                                     +
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="col">{{ item.discount }}</div>
                                         <div class="col">{{ item.price_discount }}</div>
                                         <div class="col">
-                                            <a href="{% url 'cart:remove' item.product.id %}" type="button"
-                                               class="btn btn-danger btn-sm delete-item"
-                                               aria-label="حذف محصول">
+                                            <button onclick="removeItem({{ item.product.id }})" type="button" class="btn btn-danger btn-sm delete-item" aria-label="حذف محصول">
                                                 <span aria-hidden="true">&times;</span>
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                     <hr>
                                 {% endfor %}
                             </div>
                             <div class="card-footer d-flex justify-content-between">
-                                <a href="{% url 'home' %}" type="button" class="btn btn-outline-success btn-large"
-                                   aria-label="بازگشت به فروشگاه">بازگشت به صفحه اصلی
-                                </a>
-                                <a href="{% url 'cart:clear' %}" type="button" class="btn btn-outline-success btn-large"
-                                   aria-label="خالی کردن سبد خرید">خالی کردن سبد خرید
-                                </a>
+                                <a href="{% url 'home' %}" type="button" class="btn btn-outline-success btn-large" aria-label="بازگشت به فروشگاه">بازگشت به صفحه اصلی</a>
+                                <a href="{% url 'cart:clear' %}" type="button" class="btn btn-outline-success btn-large" aria-label="خالی کردن سبد خرید">خالی کردن سبد خرید</a>
                             </div>
                         </div>
                     </div>
@@ -77,19 +65,15 @@
                                         <span>{{ cart.get_total_price }} تومان </span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        جمع تخفیف
-                                        <span>{{ cart.get_total_discount }} تومان </span>
+                                        هزینه ارسال
+                                        <span>{{ cart.get_shipping_cost }} تومان</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         مبلغ قابل پرداخت
-                                        <span>{{ cart.get_total_price_discount }} تومان </span>
+                                        <span>{{ cart.get_final_price }} تومان</span>
                                     </li>
                                 </ul>
-                              {% if user.is_authenticated %}
-                                <a href="{% url 'orders:order_create' %}" type="button" class="btn btn-success btn-block mt-3" >تایید سفارش</a>
-                                {% else %}
-                                <p><a href="{% url 'api:login' %}?next={{ request.path }}"> برای نهایی کردن سفارش ابتدا وارد شوید.</a></p>
-                             {% endif %}
+                                <button type="button" class="btn btn-success btn-block my-3">تکمیل سفارش</button>
                             </div>
                         </div>
                     </div>
@@ -97,6 +81,104 @@
             </div>
         </div>
     </div>
-    <div id="result"></div>
 
-{% endblock content %}
+<script>
+    function fetchData(url) {
+        return fetch(url)
+            .then(response => response.json())
+            .catch(error => console.error('Error:', error));
+    }
+
+    function renderCart() {
+        fetchData('/v1/cart/')
+            .then(response => {
+                const cartResponse = response.cart;
+                const cartItemsElement = document.querySelector('.cart-items');
+
+                cartItemsElement.innerHTML = '';
+
+                for (const item of cartResponse) {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('row');
+
+                    itemElement.innerHTML = `
+                        <div class="col">${item.product.name}</div>
+                        <div class="col">${item.price}</div>
+                        <div class="col-3">
+                            <div class="input-group">
+                                <button onclick="decrementQuantity(${item.product.id})" class="btn btn-outline-secondary" type="button" id="button-minus-${item.product.id}">
+                                    -
+                                </button>
+                                <input type="text" class="form-control text-center" value="${item.quantity}" id="quantity-${item.product.id}">
+                                <button onclick="incrementQuantity(${item.product.id})" class="btn btn-outline-secondary" type="button" id="button-plus-${item.product.id}">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col">${item.discount}</div>
+                        <div class="col">${item.price_discount}</div>
+                        <div class="col">
+                            <button onclick="removeItem(${item.product.id})" type="button" class="btn btn-danger btn-sm delete-item" aria-label="حذف محصول">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    `;
+
+                    cartItemsElement.appendChild(itemElement);
+                }
+            });
+    }
+
+    function removeItem(productId) {
+        fetch(`/v1/cart/remove/${productId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+            .then(() => {
+                renderCart();
+                // Perform any additional actions after removing the item
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function incrementQuantity(productId) {
+        const quantityElement = document.getElementById(`quantity-${productId}`);
+        const quantity = parseInt(quantityElement.value);
+
+        fetch(`/v1/cart/add/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ quantity: quantity })
+        })
+            .then(() => {
+                renderCart();
+                // Perform any additional actions after incrementing the quantity
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function decrementQuantity(productId) {
+        fetch(`/v1/cart/mines/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+            .then(() => {
+                renderCart();
+                // Perform any additional actions after decrementing the quantity
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCart();
+    });
+</script>

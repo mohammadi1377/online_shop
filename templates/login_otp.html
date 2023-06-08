@@ -46,7 +46,7 @@
             <form id="form-group-pro" method="post" action="{% url 'api:otp' %}">
                 {% csrf_token %}
                     <label for="username">ایمیل یا شماره موبایل خود را وارد کنید</label>
-                    <input type="text" id="username" name="username">
+                    <input type="text" id="id_mail_phone" name="mail_phone">
 
 
                     <button type="submit" class="btn btn-primary btn-block">ارسال رمز یکبار مصرف</button>
