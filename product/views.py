@@ -49,16 +49,24 @@ class ProductDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
+
+        if product.category and product.category.discount:
+            category_discount_status = product.category.discount.status
+        else:
+            category_discount_status = None
+
         comments = product.comment.all()
         details = product.short_description.split('-')
         images = product.product_image.all()
-        category_discount_status = product.category.discount.status
+
         context['category_discount_status'] = category_discount_status
         context['comments'] = comments
         context['images'] = images
         context['details'] = details
         context['comment_form'] = CommentForm()  # Add the comment form to the context
+
         return context
+
 
     def post(self, request, *args, **kwargs):
         form = CommentForm(request.POST)
