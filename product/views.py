@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+from django.views.generic import TemplateView
+
+
+class HomeView(TemplateView):
+    template_name = 'base.html'
+
+
+=======
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
@@ -110,3 +119,4 @@ class DiscountedProductListView(generic.ListView):
             images[product] = product_image
             context['images'] = images
         return context
+>>>>>>> develop

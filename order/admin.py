@@ -1,4 +1,9 @@
 from django.contrib import admin
+<<<<<<< HEAD
+from .models import Orders, OrderItems, Payment, Carts, CartItems
+
+admin.site.register([Carts, CartItems, Orders, OrderItems, Payment])
+=======
 from .models import Orders, OrderItems
 
 @admin.register(Orders)
@@ -23,3 +28,4 @@ class OrderItems(admin.ModelAdmin):
     @staticmethod
     def product(obj):
         return obj.product.name
+>>>>>>> develop
