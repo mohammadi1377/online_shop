@@ -43,7 +43,7 @@
         <div class="jumbotron">
             <h2 class="text-center mb-4">ورود</h2>
             {% include 'messages.html' %}
-            <form id="form-group-pro" method="post" action="{% url 'api:otp' %}">
+            <form id="form-group-pro" method="post" action="{% url 'otp' %}">
                 {% csrf_token %}
                     <label for="username">ایمیل یا شماره موبایل خود را وارد کنید</label>
                     <input type="text" id="id_mail_phone" name="mail_phone">
