@@ -6,15 +6,13 @@
             <div class="page-header__breadcrumb">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}" dideo-checked="true">خانه</a>
-                            <svg class="breadcrumb-arrow" width="6px" height="9px">
-                                <use xlink:href="/static/images/sprite.svg#arrow-rounded-right-6x9"></use>
-                            </svg>
-
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" dideo-checked="true">خانه</a></li>
+                        <svg class="breadcrumb-arrow" width="6px" height="9px">
+                            <use xlink:href="/static/images/sprite.svg#arrow-rounded-right-6x9"></use>
+                        </svg>
                         <li class="breadcrumb-item"><a href="{% url 'category_detail' product.category.pk %}"
-                                                       dideo-checked="true">{{ product.category.title }}</a>
-
-                        <li class="breadcrumb-item active" aria-current="page"> {{ product.name }}</li>
+                                                       dideo-checked="true">{{ product.category.title }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -56,39 +54,31 @@
                 <div class="col-md-6">
                     <div class="card-text">
                         <h2>{{ product.name }}</h2>
-                        <h4>{{ product.price }} تومان </h4>
-                        {% if category.discount.status or product.discount.status %}
+                        <h4>{{ product.price }} تومان</h4>
+                        {% if category_discount_status or product.discount.status %}
+                        {{ product.discount.status }}
+                            {{ category.discount.status }}
                             <h5 class="card-title" style="color: red">قیمت با تخفیف : {{ product.discount_price }}
                                 تومان</h5>
                         {% endif %}
 
                         {% if product.stock %}
                             <p class="text-sm">
-                                وضعیت موجود:موجود در انبار
-                                <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="25"
-                                        height="25"
-                                        color="green"
-                                        fill="currentColor"
-                                        class="bi bi-check"
-                                        viewBox="0 0 16 16"
-                                >
+                                وضعیت موجود: موجود در انبار
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" color="green"
+                                     fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
                                     <path
-                                            d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
-                                    ></path>
+                                        d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"></path>
                                 </svg>
                             </p>
                         {% else %}
-                            <p class="text-sm">وضعیت موجود:در انبار موجود نمی باشد
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     width="25"
-                                     height="25"
-                                     fill="currentColor"
-                                     class="bi bi-x-square"
-                                     viewBox="0 0 16 16">
-                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
-                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                            <p class="text-sm">وضعیت موجود: در انبار موجود نمی باشد
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                     class="bi bi-x-square" viewBox="0 0 16 16">
+                                    <path
+                                        d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
+                                    <path
+                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
                                 </svg>
                             </p>
                         {% endif %}
@@ -97,12 +87,9 @@
                                 <li>{{ detail }}</li>
                             {% endfor %}
                         </ul>
-                        <a href="{%  url 'cart:add' product.id %}" class="btn btn-primary">افزودن به سبد خرید</a>
-{#                        <form action="{% url 'cart:add' product.id %}" method="post">#}
-{#                            {% csrf_token %}#}
-{#                            {{ form }}#}
-{#                            <input type="submit" class="btn btn-primary" value="Add to cart">#}
-{#                        </form>#}
+                        <button id="add" product="{{ product.id }}" type="button" class="btn btn-primary">اضافه کردن به
+                            سبد خرید
+                        </button>
                     </div>
                 </div>
             </div>
@@ -153,4 +140,34 @@
 
         </div>
     </section>
+<script>
+    $(document).ready(function(){
+        // This code block runs when the document is ready
+
+        $("#add").on('click', function(){
+            // This code block executes when the element with id "add" is clicked
+
+            let product = $("#add").attr("product");
+
+            // Send an AJAX request to the server to add the product to the cart
+            $.ajax({
+                url: '/api/cart/'+ product + '/',
+                type: 'POST',
+                data: {
+                    product_id: product,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'  // Replace with the actual value of the CSRF token
+                },
+                success: function(response){
+                    console.log(response)
+                    alert("محصول شما به سبد خرید اضافه شد. تعداد آن را می توانید در سبد خرید مشاهده کنید.");
+                    window.location.replace("/product/"+ product);
+                },
+                error: function(){
+                    alert("مشکلی در اضافه کردن محصول به سبد خرید رخ داد.");
+                }
+            });
+        });
+    });
+</script>
+
 {% endblock %}

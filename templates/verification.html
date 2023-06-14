@@ -43,7 +43,7 @@
         <div class="jumbotron">
             <h2 class="text-center mb-4">ورود</h2>
             {% include 'messages.html' %}
-            <form id="form-group-pro" method="post" action="{% url 'api:verification' %}">
+            <form id="form-group-pro" method="post" action="{% url 'verification' %}">
                 {% csrf_token %}
                     <label for="password">لطفا رمز یکبار مصرف ارسال شده را وارد نمایید</label>
                     <input type="password" id="password" name="verification_code">

@@ -41,7 +41,7 @@
     <div class="container py-5">
         <div class="jumbotron">
             <h4 class="text-center mb-4">ثبت نام</h4>
-            <form id="form-group-pro" method="post">
+            <form id="form-group-pro" method="POST">
                 {% csrf_token %}
                 <label for="username">نام کاربری</label>
                 <input type="text" id="username" name="username">
@@ -54,33 +54,26 @@
                 <input type="password" id="password" name="password">
 
 
-                <button type="submit" class="btn btn-primary btn-block">ثبت نام</button>
+                <button id="submit" class="btn btn-primary btn-block">ثبت نام</button>
 
                 <br>
-                <p><a href="{% url 'api:login' %}?next={{ request.path }}">اگر حساب کاربری دارید وارد شوید.</a></p>
+                <p><a href="{% url 'login' %}">اگر حساب کاربری دارید وارد شوید.</a></p>
             </form>
         </div>
     </div>
-    </div>
-{% endblock %}
 <script>
     $(document).ready(function () {
-        $('#register-form').submit(function (event) {
+        $("#submit").on('click', function(){
             event.preventDefault();
-            let formdata = new FormData;
-            formdata.append('email', $('#email').val().trim())
-            formdata.append('username', $('#username').val().trim())
-            formdata.append('password', $('#password').val().trim())
-            console.log(formdata)
             $.ajax({
-                url: "{% url 'api:register' %} ", // sreplace with the URL of your DRF API endpoint
+                url: '/api/register/',
                 type: 'POST',
-                dataType: 'json',
-                data: formdata,
+                {#dataType: 'json',#}
+                data : $("#form-group-pro").serialize(),
 
                 success: function (data) {
                     console.log('Success: ' + data);
-                    // handle successful registration here, such as redirecting to a new page
+                    window.location.replace("/home/")
                 },
                 error: function (xhr, status, error) {
                     console.log('Error: ' + error);
@@ -93,3 +86,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}

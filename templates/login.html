@@ -43,49 +43,46 @@
         <div class="jumbotron">
             <h2 class="text-center mb-4">ورود</h2>
             {% include 'messages.html' %}
-            <form id="form-group-pro" method="post" action="{% url 'api:login' %}">
+            <form id="form-group-pro" method="POST">
                 {% csrf_token %}
                     <label for="username">نام کاربری</label>
                     <input type="text" id="username" name="username">
                     <label for="password">رمز عبور</label>
                     <input type="password" id="password" name="password">
 
-                    <button type="submit" class="btn btn-primary btn-block">ورود</button>
+                    <button id="submit" class="btn btn-primary btn-block">ورود</button>
 
                 <br>
-                <p><a href="{% url 'api:otp' %}">ورود با رمز یکبار مصرف</a></p>
+                <p><a href="{% url 'otp' %}">ورود با رمز یکبار مصرف</a></p>
                 <hr>
-                <p><a href="{% url 'api:register' %}?next={{ request.path }}">لطفا اگر حساب کاربری ندارید ثبت
-                    نام کنید.
-
+                <p><a href="{% url 'register' %}?next={{ request.path }}">لطفا اگر حساب کاربری ندارید ثبت نام کنید
+                </a>
 
             </form>
+
         </div>
 
     </div>
 
-{% endblock %}
 <script>
     $(document).ready(function () {
-        $('#form-group-pro').submit(function (event) {
+        $("#submit").on('click', function(){
             event.preventDefault();
-            let formdata = new FormData;
-            formdata.append('username', $('#username').val().trim())
-            formdata.append('password', $('#password').val().trim())
-            console.log(formdata)
             $.ajax({
-                url: $('#form-group-pro').attr('action') , // sreplace with the URL of your DRF API endpoint
+                url: '/api/login/' ,
                 type: 'POST',
-                dataType: 'json',
-                data: formdata,
+                {#dataType: 'json',#}
+                data : $("#form-group-pro").serialize(),
+
 
                 success: function (data) {
                     console.log('Success: ' + data);
-                    // handle successful registration here, such as redirecting to a new page
+                    window.location.replace("/home/")
+
                 },
                 error: function (xhr, status, error) {
+                    console.log(status)
                     console.log('Error: ' + error);
-                    // handle registration error here, such as displaying an error message to the user
                 }
             });
         });
@@ -94,3 +91,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}

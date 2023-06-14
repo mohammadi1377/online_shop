@@ -19,36 +19,15 @@
                                     <div class="col"></div>
                                 </div>
                             </div>
-                            <div class="card-body cart-items">
-                                {% for item in cart %}
-                                    <div class="row">
-                                        <div class="col">{{ item.product.name }}</div>
-                                        <div class="col">{{ item.price }}</div>
-                                        <div class="col-3">
-                                            <div class="input-group">
-                                                <button onclick="decrementQuantity({{ item.product.id }})" class="btn btn-outline-secondary" type="button" id="button-minus-{{ item.product.id }}">
-                                                    -
-                                                </button>
-                                                <input type="text" class="form-control text-center" value="{{ item.quantity }}" id="quantity-{{ item.product.id }}">
-                                                <button onclick="incrementQuantity({{ item.product.id }})" class="btn btn-outline-secondary" type="button" id="button-plus-{{ item.product.id }}">
-                                                    +
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="col">{{ item.discount }}</div>
-                                        <div class="col">{{ item.price_discount }}</div>
-                                        <div class="col">
-                                            <button onclick="removeItem({{ item.product.id }})" type="button" class="btn btn-danger btn-sm delete-item" aria-label="حذف محصول">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                {% endfor %}
+                            <div id="cart_items" class="card-body cart-items">
+                                <!-- Cart items will be dynamically generated here -->
                             </div>
                             <div class="card-footer d-flex justify-content-between">
-                                <a href="{% url 'home' %}" type="button" class="btn btn-outline-success btn-large" aria-label="بازگشت به فروشگاه">بازگشت به صفحه اصلی</a>
-                                <a href="{% url 'cart:clear' %}" type="button" class="btn btn-outline-success btn-large" aria-label="خالی کردن سبد خرید">خالی کردن سبد خرید</a>
+                                <a href="{% url 'home' %}" type="button" class="btn btn-outline-success btn-large"
+                                   aria-label="بازگشت به فروشگاه">بازگشت به صفحه اصلی</a>
+                                <button id="empty-cart-btn" type="button" class="btn btn-outline-success btn-large"
+                                        aria-label="خالی کردن سبد خرید">خالی کردن سبد خرید
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -59,21 +38,21 @@
                                 جزئیات سفارش
                             </div>
                             <div class="card-body col-lg-12">
-                                <ul class="list-group col-lg-12">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        جمع کل فاکتور
-                                        <span>{{ cart.get_total_price }} تومان </span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        هزینه ارسال
-                                        <span>{{ cart.get_shipping_cost }} تومان</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        مبلغ قابل پرداخت
-                                        <span>{{ cart.get_final_price }} تومان</span>
-                                    </li>
-                                </ul>
-                                <button type="button" class="btn btn-success btn-block my-3">تکمیل سفارش</button>
+                                <div class="list-group col-lg-offset-12" id="total-details">
+                                    <!-- Total details will be dynamically generated here -->
+                                </div>
+                                <div class="list-group-item col-lg-offset-12">
+                                    {% if user.is_authenticated %}
+                                        <button id="create-order-btn" type="button"
+                                                class="btn btn-success btn-group-sm btn-block " style="width: 280px"
+                                                aria-label="ادامه و پرداخت">ادامه و پرداخت
+                                        </button>
+                                    {% else %}
+                                        <p><a href="{% url 'api:login' %}?next={{ request.path }}"> برای نهایی کردن
+                                            سفارش
+                                            وارد حساب کاربری خود شوید.</a></p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,104 +60,245 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
-<script>
-    function fetchData(url) {
-        return fetch(url)
-            .then(response => response.json())
-            .catch(error => console.error('Error:', error));
-    }
+        function renderCart() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/cart/',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                },
+                success: function (response) {
+                    console.log(response);
 
-    function renderCart() {
-        fetchData('/v1/cart/')
-            .then(response => {
-                const cartResponse = response.cart;
-                const cartItemsElement = document.querySelector('.cart-items');
+                    var cartItems = response.items;
 
-                cartItemsElement.innerHTML = '';
+                    var cartItemsHTML = '';
+                    for (var i = 0; i < cartItems.length; i++) {
+                        var item = cartItems[i];
 
-                for (const item of cartResponse) {
-                    const itemElement = document.createElement('div');
-                    itemElement.classList.add('row');
+                        var itemHTML = '<div class="row">';
+                        itemHTML += '<div class="col">' + item.product.name + '</div>';
+                        itemHTML += '<div class="col">' + item.price + '</div>';
+                        itemHTML += '<div class="col-3">';
+                        itemHTML += '<div class="input-group">';
+                        itemHTML += '<button onclick="decrementQuantity(event, \'' + item.product.pk +
+                            '\')" class="btn btn-outline-secondary" type="button" id="button-minus-' + item.product.pk +
+                            '">-</button>';
 
-                    itemElement.innerHTML = `
-                        <div class="col">${item.product.name}</div>
-                        <div class="col">${item.price}</div>
-                        <div class="col-3">
-                            <div class="input-group">
-                                <button onclick="decrementQuantity(${item.product.id})" class="btn btn-outline-secondary" type="button" id="button-minus-${item.product.id}">
-                                    -
-                                </button>
-                                <input type="text" class="form-control text-center" value="${item.quantity}" id="quantity-${item.product.id}">
-                                <button onclick="incrementQuantity(${item.product.id})" class="btn btn-outline-secondary" type="button" id="button-plus-${item.product.id}">
-                                    +
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col">${item.discount}</div>
-                        <div class="col">${item.price_discount}</div>
-                        <div class="col">
-                            <button onclick="removeItem(${item.product.id})" type="button" class="btn btn-danger btn-sm delete-item" aria-label="حذف محصول">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    `;
+                        itemHTML += '<input type="text" class="form-control text-center" value="' + item.quantity +
+                            '" id="quantity-' + item.product.pk + '">';
+                        itemHTML += '<button onclick="incrementQuantity(event, \'' + item.product.pk +
+                            '\')" class="btn btn-outline-secondary" type="button" id="button-plus-' + item.product.pk +
+                            '">+</button>';
+                        itemHTML += '</div>';
+                        itemHTML += '</div>';
+                        itemHTML += '<div class="col">' + item.discount + '</div>';
+                        itemHTML += '<div class="col">' + item.price_discount + '</div>';
+                        itemHTML += '<div class="col">';
+                        itemHTML += '<button onclick="removeItem(event, \'' + item.product.pk +
+                            '\')" type="button" class="btn btn-danger btn-sm delete-item" aria-label="حذف محصول">';
+                        itemHTML += '<span aria-hidden="true">&times;</span>';
+                        itemHTML += '</button>';
+                        itemHTML += '</div>';
+                        itemHTML += '</div>';
 
-                    cartItemsElement.appendChild(itemElement);
+                        cartItemsHTML += itemHTML;
+                    }
+
+                    $('#cart_items').html(cartItemsHTML);
+
+                    var totalPrice = response.total_price; // Replace with the actual property for total price in the response
+                    var totalDiscount = response.total_discount; // Replace with the actual property for total discount in the response
+                    var totalPriceDiscount = response.total_price_discount; // Replace with the actual property for total price discount in the response
+
+                    // Create the HTML for displaying total price, total discount, and total price discount
+                    var totalPriceHTML = '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    totalPriceHTML += 'جمع کل';
+                    totalPriceHTML += '<div id="total-price">' + totalPrice + ' تومان </div>';
+                    totalPriceHTML += '</li>';
+
+                    var totalDiscountHTML = '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    totalDiscountHTML += 'تخفیف کل ';
+                    totalDiscountHTML += '<div id="total-discount">' + totalDiscount + ' تومان </div>';
+                    totalDiscountHTML += '</li>';
+
+                    var totalPriceDiscountHTML = '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    totalPriceDiscountHTML += 'قابل پرداخت';
+                    totalPriceDiscountHTML += '<div id="total-price-discount">' + totalPriceDiscount + ' تومان </div>';
+                    totalPriceDiscountHTML += '</li>';
+
+                    // Update the HTML elements with the generated HTML
+                    $('#total-details').html(totalPriceHTML + totalDiscountHTML + totalPriceDiscountHTML);
+                },
+                error: function (response) {
+                    console.log(response);
                 }
             });
-    }
+        }
 
-    function removeItem(productId) {
-        fetch(`/v1/cart/remove/${productId}/`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
+        function decrementQuantity(event, productId) {
+            event.preventDefault();
+
+            var quantityInput = $('#quantity-' + productId);
+            var quantity = parseInt(quantityInput.val());
+            if (quantity > 1) {
+                quantity--;
+                quantityInput.val(quantity);
+                updateQuantity(productId, quantity, 'decrement');
             }
-        })
-            .then(() => {
-                renderCart();
-                // Perform any additional actions after removing the item
-            })
-            .catch(error => console.error('Error:', error));
-    }
+               renderCart()
 
-    function incrementQuantity(productId) {
-        const quantityElement = document.getElementById(`quantity-${productId}`);
-        const quantity = parseInt(quantityElement.value);
+        }
 
-        fetch(`/v1/cart/add/${productId}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({ quantity: quantity })
-        })
-            .then(() => {
-                renderCart();
-                // Perform any additional actions after incrementing the quantity
-            })
-            .catch(error => console.error('Error:', error));
-    }
+        function incrementQuantity(event, productId) {
+            event.preventDefault();
 
-    function decrementQuantity(productId) {
-        fetch(`/v1/cart/mines/${productId}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-            .then(() => {
-                renderCart();
-                // Perform any additional actions after decrementing the quantity
-            })
-            .catch(error => console.error('Error:', error));
-    }
+            var quantityInput = $('#quantity-' + productId);
+            var quantity = parseInt(quantityInput.val());
+            quantity++;
+            quantityInput.val(quantity);
+            updateQuantity(productId, quantity, 'increment');
+            renderCart()
 
-    document.addEventListener('DOMContentLoaded', () => {
-        renderCart();
-    });
-</script>
+        }
+
+        function updateQuantity(productId, quantity, action) {
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/cart/' + productId + '/',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                }, data: {
+                    action: action,
+                    quantity: quantity
+                },
+                success: function (response) {
+                    console.log(response);
+                    var item = response.item;
+                    console.log(item);
+
+                    var priceDiscount = item.price_discount;
+                    var discount = item.discount;
+                    // Calculate the new total price and total discount based on the updated item
+                    var totalPrice = parseInt($('#total-price').text().split(' ')[0]);
+                    var totalDiscount = parseInt($('#total-discount').text().split(' ')[0]);
+
+                    totalPrice += priceDiscount;
+                    totalDiscount += discount;
+
+                    $('#total-price').text(totalPrice + ' تومان');
+                    $('#total-discount').text(totalDiscount + ' تومان');
+                    $('#total-price-discount').text((totalPrice - totalDiscount) + ' تومان');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function removeItem(event, productId) {
+            event.preventDefault();
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/cart/' + productId + '/',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                },
+                success: function (response) {
+                    console.log(response);
+                    var item = response.item;
+                    var priceDiscount = item.price_discount;
+                    var discount = item.discount;
+
+                    // Calculate the new total price and total discount based on the removed item
+                    var totalPrice = parseInt($('#total-price').text().split(' ')[0]);
+                    var totalDiscount = parseInt($('#total-discount').text().split(' ')[0]);
+
+                    totalPrice -= priceDiscount;
+                    totalDiscount -= discount;
+
+                    $('#total-price').text(totalPrice + ' تومان');
+                    $('#total-discount').text(totalDiscount + ' تومان');
+                    $('#total-price-discount').text((totalPrice - totalDiscount) + ' تومان');
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+
+            });
+            renderCart()
+        }
+
+        function emptyCart() {
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/cart/',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                },
+                success: function (response) {
+                    console.log(response);
+                    // Update the UI or perform any other actions
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            renderCart()
+        }
+
+        function createOrder() {
+            $.ajax({
+                type: 'POST',
+                url: '/api/orders/create/',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                },
+                data: {
+                    address: 'selected_address_id' // Replace 'selected_address_id' with the actual selected address ID
+                },
+                success: function (response) {
+                    console.log(response);
+                    // Show the order details or perform any other actions
+                    window.location.href = '/order/detail/' + response.id + '/'; // Replace '/orders/' with the actual URL for order details page
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            renderCart();
+
+            $('#create-order-btn').click(function () {
+                createOrder();
+            });
+            $('#empty-cart-btn').click(function () {
+                emptyCart();
+            });
+        });
+
+
+    </script>
+
+{% endblock %}

@@ -2,15 +2,8 @@ from django.db.models import Q
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.views import generic
-# from rest_framework_simplejwt.authentication import JWTAuthentication
 from .forms import CommentForm
 from .models import Product, Category, Discount
-
-
-# from customers.models import User
-# from rest_framework.permissions import IsAuthenticated
-# from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-# from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 
 class HomeView(TemplateView):
@@ -59,6 +52,8 @@ class ProductDetailView(generic.DetailView):
         comments = product.comment.all()
         details = product.short_description.split('-')
         images = product.product_image.all()
+        category_discount_status = product.category.discount.status
+        context['category_discount_status'] = category_discount_status
         context['comments'] = comments
         context['images'] = images
         context['details'] = details

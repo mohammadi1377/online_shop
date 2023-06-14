@@ -19,12 +19,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('product.urls')),
-    path('', include('customers.urls')),
-    path('', include('cart.urls')),
-    path('', include('order.urls')),
-]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+				  path('admin/', admin.site.urls),
+				  path('', include('product.urls')),
+				  path('', include('customers.urls')),
+				  path('api/', include('customers.api_urls')),
+				  path('api/cart/', include('cart.api_urls')),
+				  path('', include('cart.urls')),
+				  path('api/orders/', include('order.api_urls')),
+				  path('', include('order.urls')),
+			  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -57,6 +57,12 @@
 # 	def clear(self):
 # 		del self.session[CART_SESSION_ID]
 # 		self.save()
+#
+# 	def get_product_quantity(self, product):
+# 		product_id = str(product.id)
+# 		if product_id in self.cart:
+# 			return self.cart[product_id]['quantity']
+# 		return 0
 
 
 

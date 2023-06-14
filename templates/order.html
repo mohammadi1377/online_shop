@@ -18,18 +18,8 @@
                                     <div class="col">قیمت نهایی</div>
                                 </div>
                             </div>
-                            <div class="card-body cart-items">
-
-                                {% for item in order_items %}
-                                    <div class="row">
-                                        <div class="col">{{ item.product.name }}</div>
-                                        <div class="col">{{ item.product.price }}</div>
-                                        <div class="col">{{ item.count }}</div>
-                                        <div class="col">{{ item.product.total_discount }}</div>
-                                        <div class="col">{{ item.product.discount_price}}</div>
-                                    </div>
-                                    <hr>
-                                {% endfor %}
+                            <div class="card-body cart-items" id="order-items">
+                                <!-- Order items will be dynamically loaded here -->
                             </div>
                         </div>
                     </div>
@@ -43,22 +33,18 @@
                                 <ul class="list-group col-lg-12">
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         جمع کل فاکتور
-                                        <p>{{ order.total_price }} تومان </p>
+                                        <p>{{ order.total_price }} تومان</p>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         جمع تخفیف
-                                        <p>{{ order.total_discount }}تومان </p>
+                                        <p>{{ order.total_discount }} تومان</p>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         مبلغ قابل پرداخت
-                                        <span>{{ order.total_payment }}تومان </span>
+                                        <span>{{ order.total_payment }} تومان</span>
                                     </li>
                                 </ul>
-                                <form class="float-left" method="POST"
-                                      action="{% url 'orders:update_status' order.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-success btn-block mt-3">پرداخت</button>
-                                </form>
+                                <button id="payment-button" class="btn btn-success btn-block mt-3" data-url="{% url 'orders:update_status' order.id %}">پرداخت</button>
                             </div>
                         </div>
                     </div>
@@ -69,11 +55,12 @@
                                 آدرس تحویل سفارش
                             </div>
                             <div class="card-body">
-                                    <div class="row">
-                                        <span class="col">{{ order.address.state }} , {{ order.address.city }} , {{ order.address.address }} </span>
-                                        <span class="col">کدپستی : {{ order.address.postal_code }}</span>
-                                    </div>
-                                    <hr>
+                                <div class="row">
+                                    <span class="col">{{ order.address.state }} , {{ order.address.city }} ,
+                                        {{ order.address.address }}</span>
+                                    <span class="col">کدپستی : {{ order.address.postal_code }}</span>
+                                </div>
+                                <hr>
                             </div>
                         </div>
                     </div>
@@ -83,4 +70,74 @@
     </div>
     <div id="result"></div>
 
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/api/orders/details/{{ order.id }}/',  // Replace with your API endpoint URL
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                },
+                success: function (response) {
+                    var items = response.order_items;
+                    console.log(items)
+                    var html = '';
+                    for (var i = 0; i < items.length; i++) {
+                        html += '<div class="row">';
+                        html += '<div class="col">' + items[i].product.name + '</div>';
+                        html += '<div class="col">' + items[i].product.price + '</div>';
+                        html += '<div class="col">' + items[i].count + '</div>';
+                        html += '<div class="col">' + items[i].product.total_discount + '</div>';
+                        html += '<div class="col">' + items[i].product.discount_price + '</div>';
+                        html += '</div>';
+                        html += '<hr>';
+                    }
+                    $('#order-items').html(html);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+
+            $('#payment-button').click(function (e) {
+                e.preventDefault(); // Prevent default button click behavior
+
+                var url = $(this).data('url');
+                var csrfToken = getCookie('csrftoken');
+
+                $.ajax({
+                    type: 'PUT',
+                    url: url,  // Use the provided data-url attribute
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+                    },
+                    success: function (response) {
+                        // Handle success response
+                        console.log(response);
+                        window.location.replace("/home/")
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock content %}
