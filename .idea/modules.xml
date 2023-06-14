@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/oneline_shope.iml" filepath="$PROJECT_DIR$/.idea/oneline_shope.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/.idea/online_jewelry_shop.iml" filepath="$PROJECT_DIR$/.idea/online_jewelry_shop.iml" />
+>>>>>>> develop
     </modules>
   </component>
 </project>

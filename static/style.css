@@ -1,0 +1,217 @@
+
+@import url(./font/IRANSans/css/fontiran.css);
+@import url(./style/normalize.css);
+
+:root {
+  --body-font: "iransansx";
+ 
+}
+body {
+  font-family:var(--body-font) ;
+  list-style: none;
+  text-decoration: none;
+  text-align: right;
+  
+}
+
+.nav-item{
+    padding-right: 5px;
+}
+/*=====================cards========================*/
+.card-body{
+    display: flex;
+    flex-direction: column;
+}
+.card-title{
+    display: flex;
+    justify-content: flex-start;
+}
+.card-text{
+    display: flex;
+    justify-content: flex-start; 
+}
+
+.card-img{
+    width: 100%;
+    max-width: 100%;
+}
+/*==================slider==========*/
+.slider-img{
+    width: 100%;
+    max-width: 100%;
+    height: 60vh;
+    max-height: 60vh
+}
+.slider__title{
+    text-shadow: 5px 5px 10px rgb(108, 107, 107);
+}
+
+.slider__text{
+    text-shadow: 5px 5px 10px rgb(108, 107, 107);
+
+}
+/*====================top footer=================*/
+footer{
+    background: #343a40;
+}
+.footer-title{
+    padding: 30px 0 20px;
+    text-align: right;
+}
+.footer__fristCol--title{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.footer__fristCol--li{
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+}
+.footer__fristCol--li a{
+    color: #6c757d;
+
+}
+.footer__fristCol--li a:hover{
+    color: #ffffff;
+}
+.footer__fristCol--li :hover{
+    text-decoration: none;
+}
+/*======================bottom footer======================*/
+.footer__line{
+    position: relative;
+}
+.footer__line::before{
+    content: '';
+    position: absolute;
+    width: 1100px;
+    height: 1px;
+    background-color: #6c757d ;
+    top: 20px;
+    right: 0;
+    left: 0;
+    }
+    .right__col{
+        display: flex;
+        align-items: center;   
+        flex-direction: column;
+        margin-top: 50px;
+    }
+    .left__col{
+        display: flex;
+        align-items: center;   
+        flex-direction: column;
+        margin-top: 50px;
+    }
+
+ .img__left{
+    max-width: 80%;
+ }
+
+
+
+ /*================contact us start=======================*/
+
+ .form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 50px;
+ }
+ .form input{
+    margin-bottom: 20px;
+}
+ .form-body{
+    background-image: url(./pic/empty-photographer-studio-background-abstract-background-texture-beauty-dark-light-clear-blue-cold-gray-snowy-white-gradient-flat-wall-floor_1258-88221.avif);
+ }
+ .form__title{
+    margin-top: 25px;
+    text-align: right;
+    color: #ffffff;
+ }
+.form__base{
+    background-color: rgb(199, 198, 198);
+}
+
+ .submit{
+    margin-top: 15px;
+ }
+
+ /*==============products item ==================*/
+ .bottom-nav{
+    background-color: #e9ecef;
+
+ }
+ .items{
+    display: flex;
+    padding: 10px;
+    list-style: none;
+ }
+ .items .item a{
+    text-decoration: none;
+    color: #6c757d;
+ }
+ .product-card{
+    margin-top: 30px;
+
+ }
+ .img-card{
+    width: 80%;
+    max-width: 80%;
+ }
+ .card-text{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+ }
+ .card-text ul{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+ }
+/*-------------------------*/
+/*.class-for-profile {*/
+/*  !* Styles for the profile form *!*/
+/*}*/
+
+/*.class-for-profile form {*/
+/*  max-width: 400px;*/
+/*  margin: 0 auto;*/
+/*  padding: 20px;*/
+/*  background-color: #f5f5f5;*/
+/*  border: 1px solid #ccc;*/
+/*  border-radius: 4px;*/
+/*}*/
+
+/*.class-for-profile label {*/
+/*  display: block;*/
+/*  margin-bottom: 10px;*/
+/*  font-weight: bold;*/
+/*}*/
+
+/*.class-for-profile input[type="text"],*/
+/*.class-for-profile input[type="tel"] {*/
+/*  width: 100%;*/
+/*  padding: 8px;*/
+/*  margin-bottom: 15px;*/
+/*  border: 1px solid #ccc;*/
+/*  border-radius: 4px;*/
+/*  box-sizing: border-box;*/
+/*}*/
+
+/*.class-for-profile button[type="submit"] {*/
+/*  background-color: #4CAF50;*/
+/*  color: white;*/
+/*  padding: 10px 15px;*/
+/*  border: none;*/
+/*  border-radius: 4px;*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*!* Additional styles from the HTML code *!*/
+/*.class-for-profile h1 {*/
+/*  text-align: center;*/
+/*}*/

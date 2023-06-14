@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+<<<<<<< HEAD
+=======
+import datetime
+
+>>>>>>> develop
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,9 +45,34 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'product',
+<<<<<<< HEAD
     'customers',
     'order',
 ]
+=======
+    'cart',
+    'customers',
+    'order',
+    'rest_framework',
+    'celery',
+    'rest_framework_simplejwt.token_blacklist',
+
+]
+#
+# REST_FRAMEWORK = {
+#     # 'DEFAULT_AUTHENTICATION_CLASSES': (
+#     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     # )
+# }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=100),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+}
+
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
+>>>>>>> develop
 
 JALALI_DATE_DEFAULTS = {
    'Strftime': {
@@ -71,13 +101,25 @@ JALALI_DATE_DEFAULTS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+<<<<<<< HEAD
+=======
+    # 'corsheaders.middleware.CorsMiddlewar',
+>>>>>>> develop
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+<<<<<<< HEAD
 ]
 
+=======
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.middleware.middleware.JWTAuthenticationMiddleware',
+]
+
+
+>>>>>>> develop
 ROOT_URLCONF = 'online_shope.urls'
 
 TEMPLATES = [
@@ -110,6 +152,10 @@ DATABASES = {
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -141,10 +187,23 @@ USE_I18N = True
 USE_TZ = True
 
 
+<<<<<<< HEAD
+=======
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR,"media")
+
+>>>>>>> develop
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+<<<<<<< HEAD
+=======
+STATICFILES_DIRS = [
+BASE_DIR / "static",
+]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+>>>>>>> develop
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -152,6 +211,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'customers.User'
 
+<<<<<<< HEAD
 #  send_mail(subject,message,sender,[recipients],fail-silently = false)
 #-----------MAIL---------------
 # EMAIL_HOST = 'smtp.gamil.com'
@@ -161,5 +221,32 @@ AUTH_USER_MODEL = 'customers.User'
 # EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp .EmailBackend'
 #-----------------------------------
+=======
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+# SESSION_COOKIE_SECURE = True  # Optional: Use secure cookies for session
+
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+# Redis Configuration
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
+# send_mail(subject,message,sender,[recipients],fail-silently = false)
+# -----------MAIL---------------
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'shervinrezaei1378@gmail.com'
+EMAIL_HOST_PASSWORD = 'ansgarrjdwbmbeuc'
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# -----------------------------------
+>>>>>>> develop
 
 

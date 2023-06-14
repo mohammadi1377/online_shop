@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <module type="PYTHON_MODULE" version="4">
   <component name="FacetManager">
     <facet type="django" name="Django">
@@ -21,11 +22,23 @@
     <orderEntry type="library" name="font-awesome" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
   </component>
+=======
+<module version="4">
+>>>>>>> develop
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
     <option name="myDocStringFormat" value="Plain" />
   </component>
   <component name="TemplatesService">
+<<<<<<< HEAD
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
+=======
+    <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/templates" />
+      </list>
+    </option>
+>>>>>>> develop
   </component>
 </module>

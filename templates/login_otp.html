@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+    <style>
+        /* Custom form styles */
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container py-5">
+        <div class="jumbotron">
+            <h2 class="text-center mb-4">ورود</h2>
+            {% include 'messages.html' %}
+            <form id="form-group-pro" method="post" action="{% url 'otp' %}">
+                {% csrf_token %}
+                    <label for="username">ایمیل یا شماره موبایل خود را وارد کنید</label>
+                    <input type="text" id="id_mail_phone" name="mail_phone">
+
+
+                    <button type="submit" class="btn btn-primary btn-block">ارسال رمز یکبار مصرف</button>
+
+
+            </form>
+        </div>
+
+    </div>
+
+{% endblock %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>

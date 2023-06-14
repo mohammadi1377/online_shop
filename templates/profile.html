@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+.container my-5 {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.jumbotron {
+  background-color: #e7eaea;
+  padding: 20px;
+  border-radius: 10px;
+    margin-bottom: 50px;
+}
+
+h4 {
+  font-size: 24px;
+  color: #333;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #1a1a1a;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+
+
+.btn:hover {
+  background-color: #28a745;
+  color: #fff;
+}
+</style>
+
+    <div class="container py-5">
+        <div class="jumbotron">
+            <div class="container my-5">
+            <h4>اطلاعات شخصی</h4>
+            <hr>
+            <p><strong>نام و نام خانوادگی :</strong> {{ user.get_full_name }}</p>
+            <p><strong>نام کاربری :</strong> {{ user.username }}</p>
+            <p><strong>ایمیل :</strong> {{ user.email }}</p>
+
+            <div class="button-row">
+                <a class="btn btn-outline-success btn-large" href="{% url 'api:edit_profile' request.user.id %}">ویرایش
+                    اطلاعات شخصی</a>
+                <a class="btn btn-outline-success btn-large" href="{% url 'add-address' request.user.id %}">افزودن
+                    آدرس</a>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-4" id="headings">
+                    <div class="card-header">آدرس ها <span class="float-left"><a
+                            href="{% url 'add-address' request.user.id %}">افزودن آدرس </a></span></div>
+                    <div class="card-body">
+                        {% if addresses %}
+                            {% for address in addresses %}
+                                <h4 class="mb-3">آدرس {{ forloop.counter }}</h4>
+                                <form class="float-left" method="POST"
+                                      action="{% url 'remove-address' address.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="address_id" value="{{ address.id }}">
+                                    <button type="submit" class="btn btn-link p-0"><i
+                                            class="fas fa-trash-alt small text-muted"></i></button>
+                                </form>
+                                <p>
+                                    <strong>کشور: </strong>{{ address.state }} <br>
+                                    <strong>شهر: </strong>{{ address.city }} <br>
+                                    <strong>کد پستی:</strong>{{ address.postal_code }} <br>
+                                    <strong>آدرس:</strong>{{ address.address }} <br>
+                                </p>
+                                <hr>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-danger">
+                                آدرسی تا کنون ثبت نشده است
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card mb-4" id="tables">
+                    <div class="card-header">سفارش های من</div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>آیتم</th>
+                                <th>وضعیت</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if orders %}
+                                {% for order in orders %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ order.id}}</td>
+                                        <td>
+                                            {{ order.status }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td class="text-danger" colspan="3">سبد خرید خالی است.</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% endblock content %}

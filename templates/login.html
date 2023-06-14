@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+    <style>
+        /* Custom form styles */
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container py-5">
+        <div class="jumbotron">
+            <h2 class="text-center mb-4">ورود</h2>
+            {% include 'messages.html' %}
+            <form id="form-group-pro" method="POST">
+                {% csrf_token %}
+                    <label for="username">نام کاربری</label>
+                    <input type="text" id="username" name="username">
+                    <label for="password">رمز عبور</label>
+                    <input type="password" id="password" name="password">
+
+                    <button id="submit" class="btn btn-primary btn-block">ورود</button>
+
+                <br>
+                <p><a href="{% url 'otp' %}">ورود با رمز یکبار مصرف</a></p>
+                <hr>
+                <p><a href="{% url 'register' %}?next={{ request.path }}">لطفا اگر حساب کاربری ندارید ثبت نام کنید
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+<script>
+    $(document).ready(function () {
+        $("#submit").on('click', function(){
+            event.preventDefault();
+            $.ajax({
+                url: '/api/login/' ,
+                type: 'POST',
+                {#dataType: 'json',#}
+                data : $("#form-group-pro").serialize(),
+
+
+                success: function (data) {
+                    console.log('Success: ' + data);
+                    window.location.replace("/home/")
+
+                },
+                error: function (xhr, status, error) {
+                    console.log(status)
+                    console.log('Error: ' + error);
+                }
+            });
+        });
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}

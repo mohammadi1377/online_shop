@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
@@ -46,12 +47,25 @@ class Orders(BaseModel):
 	]
 	status = models.IntegerField(("وضعیت"), choices=STATUS, default=3)
 	discount = models.IntegerField(blank=True, null=True, default=None)
+=======
+from django.db import models
+from core.models import BaseModel
+from customers.models import User, Address
+from product.models import Product, Category
+
+
+class Orders(BaseModel):
+	customer = models.ForeignKey(User, verbose_name="مشتری", on_delete=models.CASCADE)
+	address = models.ForeignKey(Address, verbose_name="آدرس", on_delete=models.CASCADE)
+	status = models.BooleanField(default=False)
+>>>>>>> develop
 
 	class Meta:
 		verbose_name = "فاکتور"
 		verbose_name_plural = 'فاکتور'
 
 	@property
+<<<<<<< HEAD
 	def get_total_price(self):
 		total = sum(item.get_cost() for item in self.order_items.all())
 		if self.discount:
@@ -80,6 +94,21 @@ class Coupon(models.Model):
 		return self.valid_from <= now <= self.valid_to
 
 # ------------اجزای داخل فاکتور------------
+=======
+	def total_price(self):
+		order_items = self.order_items.all()
+		total = sum(item.item_cost for item in order_items)
+		return total
+
+	@property
+	def total_discount(self):
+		order_items = self.order_items.all()
+		total = sum(item.item_discount for item in order_items)
+		return total
+
+	def total_payment(self):
+		return self.total_price - self.total_discount
+>>>>>>> develop
 
 
 class OrderItems(models.Model):
@@ -94,6 +123,7 @@ class OrderItems(models.Model):
 	def __str__(self) -> str:
 		return f"{self.product.name}"
 
+<<<<<<< HEAD
 	def get_cost(self):
 		return self.count * self.product.price
 
@@ -104,3 +134,12 @@ class Payment(BaseModel):
 	class Meta:
 		verbose_name = "مبلغ"
 		verbose_name_plural = 'مبلغ'
+=======
+	@property
+	def item_cost(self):
+		return self.count * self.product.price
+
+	@property
+	def item_discount(self):
+		return self.product.total_discount * self.count
+>>>>>>> develop
