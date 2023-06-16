@@ -1,9 +1,4 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from .models import Comment, Category, Product, Image
-
-admin.site.register([Comment, Category, Product, Image])
-=======
 from .models import *
 
 
@@ -52,4 +47,3 @@ class DiscountAdmin(admin.ModelAdmin):
 
 
 
->>>>>>> develop
