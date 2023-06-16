@@ -154,7 +154,7 @@ class AddressCreateView(LoginRequiredMixin, CreateView):
 
 	def get_success_url(self):
 		pk = self.kwargs['pk']
-		return reverse('api:profile', kwargs={'pk': pk})
+		return reverse('profile', kwargs={'pk': pk})
 
 	def form_valid(self, form):
 		form.instance.customer = self.request.user
@@ -190,7 +190,7 @@ class AddressDeleteView(LoginRequiredMixin, View):
 		except Address.DoesNotExist:
 			messages.error(request, 'آدرس پیدا نشد.')
 
-		return redirect(reverse_lazy('api:profile', kwargs={'pk': request.user.pk}))
+		return redirect(reverse_lazy('profile', kwargs={'pk': request.user.pk}))
 
 
 def register(request):

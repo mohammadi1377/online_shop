@@ -6,13 +6,13 @@
             <div class="page-header__breadcrumb">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}" dideo-checked="true">خانه</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" dideo-checked="true">خانه ></a></li>
                         <svg class="breadcrumb-arrow" width="6px" height="9px">
                             <use xlink:href="/static/images/sprite.svg#arrow-rounded-right-6x9"></use>
                         </svg>
                         <li class="breadcrumb-item"><a href="{% url 'category_detail' product.category.pk %}"
-                                                       dideo-checked="true">{{ product.category.title }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                                                       dideo-checked="true">{{ product.category.title }} > </a></li>
+                        <li class="" aria-current="page"> {{ product.name }} </li>
                     </ol>
                 </nav>
             </div>
@@ -54,13 +54,18 @@
                 <div class="col-md-6">
                     <div class="card-text">
                         <h2>{{ product.name }}</h2>
-                        <h4>{{ product.price }} تومان</h4>
-                        {% if category_discount_status or product.discount.status %}
-                        {{ product.discount.status }}
-                            {{ category.discount.status }}
-                            <h5 class="card-title" style="color: red">قیمت با تخفیف : {{ product.discount_price }}
-                                تومان</h5>
-                        {% endif %}
+
+
+                           {% if product.discount.status or category.discount.status %}
+                                <p class="card-title">
+                                    <span style="text-decoration: line-through;margin-left: 10px">{{ product.price }} تومان</span>
+                                    <strong style="color: red">{{ product.discount_price }} تومان</strong>
+                                </p>
+                           {% else %}
+                                <p class="card-title">{{ product.price }} تومان</p>
+                           {% endif %}
+
+
 
                         {% if product.stock %}
                             <p class="text-sm">
@@ -134,7 +139,7 @@
                         </form>
                     </div>
                 {% else %}
-                    <p><a href="{% url 'api:login' %}?next={{ request.path }}"> برای ثبت دیدگاه ابتدا وارد شوید.</a></p>
+                    <p><a href="{% url 'login' %}?next={{ request.path }}"> برای ثبت دیدگاه ابتدا وارد شوید.</a></p>
                 {% endif %}
             </div>
 
@@ -159,7 +164,7 @@
                 },
                 success: function(response){
                     console.log(response)
-                    alert("محصول شما به سبد خرید اضافه شد. تعداد آن را می توانید در سبد خرید مشاهده کنید.");
+                    alert("محصول شما به سبد خرید اضافه شد.");
                     window.location.replace("/product/"+ product);
                 },
                 error: function(){

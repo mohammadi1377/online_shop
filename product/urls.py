@@ -1,5 +1,6 @@
 from django.urls import path, include
-<<<<<<< HEAD
+from .views import HomeView, CategoryListView, ProductDetailView, CategoryDetailView, DiscountedCategoryListView, \
+    DiscountedProductListView, ContactUsView
 from product import views
 
 urlpatterns = [
@@ -10,15 +11,16 @@ urlpatterns = [
     # path('reserve/', views.reserve_room, name='reserve'),
     # path('otp/<user_id>', views.OtpVlidate, name='otp'),
     # path('verify/', views.verify, name='verify'),
-=======
+
 from .views import HomeView, CategoryListView, ProductDetailView, CategoryDetailView, DiscountedCategoryListView, DiscountedProductListView
+
 
 urlpatterns = [
     path('home/', CategoryListView.as_view(), name='home'),
+    path('contact/', ContactUsView.as_view(), name='contact_us'),
     path('category/<int:pk>', CategoryDetailView.as_view(), name='category_detail'),
     path('product/<slug:pk>/', ProductDetailView.as_view(), name='product_detail'),
     path('category/discount/', DiscountedCategoryListView.as_view(), name='category_discount'),
     path('products/discount/', DiscountedProductListView.as_view(), name='product_discount'),
->>>>>>> develop
 
 ]

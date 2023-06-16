@@ -181,7 +181,6 @@ class Product(BaseModel):
 				category_discount += self.category.discount.amount
 			elif self.category.discount.type == 'p':
 				category_discount += (self.price * self.category.discount.amount) / 100
-
 		# Calculate total discount
 		total_discount = product_discount + category_discount
 		return int(total_discount)

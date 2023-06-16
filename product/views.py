@@ -19,14 +19,18 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
 
+class ContactUsView(TemplateView):
+    template_name = 'contact_us.html'
+
+
 class CategoryListView(generic.ListView):
     model = Category
     template_name = 'home.html'
     context_object_name = 'categories'
     paginate_by = 6
 
-    # def get_queryset(self):
-    #     return Category.objects.filter(discount__status=True)
+    def get_queryset(self):
+        return Category.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,6 +45,8 @@ class CategoryDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        categories = Category.objects.all()  # Retrieve all categories
+        context['categories'] = categories
         category = self.get_object()
         products = category.category_product.all().select_related('category')
         images = {}
