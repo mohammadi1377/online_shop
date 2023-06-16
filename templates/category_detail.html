@@ -6,8 +6,8 @@
             <div class="page-header__breadcrumb">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{% url "home" %}"
-                                                       dideo-checked="true">خانه</a>
+                        <li class="breadcrumb-item"><a href="{% url 'home'%}" dideo-checked="true">خانه</a></li>
+                                                       ></a>
                             <svg class="breadcrumb-arrow" width="6px" height="9px">
                                 <use xlink:href="/static/images/sprite.svg#arrow-rounded-right-6x9"></use>
                             </svg>
@@ -27,13 +27,23 @@
                         {% if image %}
                             <img src="{{ image.image.url }}" alt="{{ product.name }} image">
                         {% endif %}
+
+
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
-                            <h5 class="card-title">{{ product.price }} تومان</h5>
-                            {% if category.discount.status or product.discount.status %}
-                                <h5 class="card-title" style="color: red">قیمت با تخفیف : {{ product.discount_price }} تومان</h5>
+                            {% if product.discount.status or category.discount.status %}
+                                <p class="card-title">
+                                    <span style="text-decoration: line-through;margin-left: 10px">{{ product.price }} تومان</span>
+                                    <strong style="color: red">{{ product.discount_price }} تومان</strong>
+                                </p>
+                            {% else %}
+                                <p class="card-title">{{ product.price }} تومان</p>
                             {% endif %}
                         </div>
+
+
+
+
                         <div class="card-footer">
                             <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-block">جزئیات
                                 محصول</a>

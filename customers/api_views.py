@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .serializers import UserSerializer
 from .mixin import *
 from rest_framework.response import Response

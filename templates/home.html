@@ -85,12 +85,12 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ category.title }}</h5>
                         </div>
-                    <div class="card-body" style="color: darkred">
+                    <div class="card-body" style="color: red">
                         {% if category in discounts %}
                             {% if category.discount.type == 'p' %}
-                                <h5>{{ category.discount.amount }}درصد تخفیف </h5>
+                                <p style="text-decoration: 10px">{{ category.discount.amount }}درصد تخفیف </p>
                             {% else %}
-                                <h5>{{ category.discount.amount }}تومان تخفیف</h5>
+                                <p style="text-decoration: 10px">{{ category.discount.amount }}تومان تخفیف</p>
                             {% endif %}
                         {% endif %}
                     </div>

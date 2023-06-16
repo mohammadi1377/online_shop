@@ -23,7 +23,7 @@ class Jwt_Login_Mixin(AccessMixin):
                         # print(super().dispatch(request, *args, **kwargs))
                         return super().dispatch(request, *args, **kwargs)
                     else:
-                        url = reverse('api:login')
+                        url = reverse('login')
                         response = HttpResponseRedirect(url)
                         # print("----------",response)
                         return response
@@ -34,6 +34,6 @@ class Jwt_Login_Mixin(AccessMixin):
             except jwt.InvalidTokenError:
                 return HttpResponse('Invalid JWT token.', status=401)
         else:
-            url = reverse('api:login')
+            url = reverse('login')
             response = HttpResponseRedirect(url)
             return response

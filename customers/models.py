@@ -3,7 +3,6 @@ from django.core.validators import RegexValidator
 from django.db import models
 from core.models import BaseModel
 from product.models import Discount, Product
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class User(BaseModel, AbstractUser):
@@ -15,7 +14,6 @@ class User(BaseModel, AbstractUser):
 	discount = models.ForeignKey(Discount, related_name='customer_discount', verbose_name="تخفیف کاربر",
 								 on_delete=models.CASCADE, null=True, blank=True)
 
-	# USERNAME_FIELD = 'email'
 
 	@property
 	def get_full_name(self):
