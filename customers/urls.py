@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-# from django.urls import path
-# from . import views
-#
-# urlpatterns = [
-#     path('login/', views.log_in, name='login'),
-#     path('logout/', views.sign_out, name='logout'),
-#     path('register/', views.register, name='register'),
-# ]
-=======
 from django.urls import path
 from . import views
 from .views import Otp, AddressCreateView, AddressDeleteView, Verification, ProfileView
@@ -21,4 +11,3 @@ urlpatterns = [
 	path('verification/', Verification.as_view(), name='verification'),
 	path('profile/<int:pk>', ProfileView.as_view(), name='profile'),
 ]
->>>>>>> develop
