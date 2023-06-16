@@ -5,7 +5,9 @@ from .models import User, Address
 
 class UserTestCase(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username='user1', password='password123', first_name='John', last_name='Doe')
+        self.user1 = User.objects.create_user(
+            username='user1', password='password123', first_name='John', last_name='Doe'
+        )
 
     def test_user_creation(self):
         self.assertEqual(self.user1.username, 'user1')
@@ -23,8 +25,12 @@ class UserTestCase(TestCase):
 
 class AddressTestCase(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username='user1', password='password123', first_name='John', last_name='Doe')
-        self.address1 = Address.objects.create(customer=self.user1, state='Country1', city='City1', address='Address1')
+        self.user1 = User.objects.create_user(
+            username='user1', password='password123', first_name='John', last_name='Doe'
+        )
+        self.address1 = Address.objects.create(
+            customer=self.user1, state='Country1', city='City1', address='Address1'
+        )
 
     def test_address_creation(self):
         self.assertEqual(self.address1.customer, self.user1)
