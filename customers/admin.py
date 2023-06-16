@@ -1,4 +1,7 @@
 from django.contrib import admin
+from .models import User, Address
+
+admin.site.register([User, Address])
 from .models import User, Address, Comment
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Permission
@@ -78,3 +81,4 @@ class CommentAdmin(admin.ModelAdmin):
     def full_name(obj):
         return obj.customer.get_full_name
     full_name.short_description ="نام مشتری"
+>>>>>>> develop

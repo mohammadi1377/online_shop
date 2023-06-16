@@ -3,6 +3,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from core.models import BaseModel
 from product.models import Discount, Product
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 class User(BaseModel, AbstractUser):
@@ -11,8 +13,11 @@ class User(BaseModel, AbstractUser):
 	phone_regex = RegexValidator(regex=r'09(\d{9})$',
 								 message='Enter a valid mobile number. This value may contain only numbers.')
 	phone_number = models.CharField(validators=[phone_regex], max_length=11, blank=True, verbose_name="شماره موبایل")
+	# groups = models.ManyToManyField(Group, related_name='custom_users', blank=True)
+	# user_permissions = models.ManyToManyField(Permission, related_name='custom_users', blank=True)
 	discount = models.ForeignKey(Discount, related_name='customer_discount', verbose_name="تخفیف کاربر",
 								 on_delete=models.CASCADE, null=True, blank=True)
+
 
 
 	@property
@@ -22,6 +27,15 @@ class User(BaseModel, AbstractUser):
 	class Meta:
 		verbose_name = "کاربر"
 		verbose_name_plural = "کاربر"
+
+
+class Address(BaseModel):
+	customer = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		related_name='addresses',
+		related_query_name='address',
+	)
 
 	# def tokens(self):
 	# 	refresh = RefreshToken.for_user(self)
@@ -44,6 +58,7 @@ class Address(BaseModel):
 	class Meta:
 		verbose_name = "آدرس"
 		verbose_name_plural = "آدرس"
+
 
 
 class Comment(BaseModel):

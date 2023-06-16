@@ -95,7 +95,11 @@ class CouponModelTest(TestCase):
         self.assertFalse(self.coupon.is_valid())
         self.coupon.valid_from = self.valid_from
         self.coupon.valid_to = self.valid_to - timedelta(days=1)
+<<<<<<< HEAD
+        self.assertFalse(self.coupon.is_valid())
+=======
         self.assertTrue(self.coupon.is_valid())
+>>>>>>> develop
 
     def test_coupon_discount_range(self):
         self.coupon.discount = 50
